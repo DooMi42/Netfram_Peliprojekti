@@ -11,6 +11,7 @@ namespace Netfram_Peli
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Battle.Init();
 
             Console.WriteLine("Welcome to the game!\n" +
                 "\nPlayer Army:");
@@ -26,7 +27,8 @@ namespace Netfram_Peli
             Console.ReadLine();
             Console.Clear();
 
-            Units.Fighting();
+            Battle.Fighting();
+            Battle.Fighting();
         }
     }
 }
