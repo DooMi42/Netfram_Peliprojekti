@@ -8,31 +8,39 @@ namespace Netfram_Peli
 {
     public class Battle
     {
-        static List<Units> pArmy = new List<Units>();
-        static List<Units> eArmy = new List<Units>();
+        //Army lists
+        public static List<Units> pArmy = new List<Units>();
+        public static List<Units> eArmy = new List<Units>();
+
+        // Init the battle
+        #region
         public static void Init()
         {
-            pArmy.Add(new Units("Human Warrior ", 100, 50));
-            pArmy.Add(new Units("Human Archer ", 100, 50));
+            pArmy.Add(new Units("Human Warrior", 100, 50));
+            pArmy.Add(new Units("Human Archer", 100, 50));
+            pArmy.Add(new Units("Human Mage", 100, 50));
 
-            eArmy.Add(new Units("Skeleton Warrior ", 100, 50));
-            eArmy.Add(new Units("Skeleton Archer ", 100, 50));
-            eArmy.Add(new Units("Skeleton Mage ", 100, 50));
+            eArmy.Add(new Units("Skeleton Warrior", 100, 50));
+            eArmy.Add(new Units("Skeleton Archer", 100, 50));
+            eArmy.Add(new Units("Skeleton Mage", 100, 50));
         }
-        public static void Fighting()
-        {
+        #endregion
 
+        // Player Fighting
+        #region
+        public static void PlayerFighting()
+        {
             int attacker = -1;
             string unitChoice;
 
             while (attacker < 0)
             {
                 unitChoice = AskUnit();
-                int n = Convert.ToInt32(unitChoice);
+                int convertUnitChoice = Convert.ToInt32(unitChoice);
 
-                if (n > 0 && n <= pArmy.Count())
+                if (convertUnitChoice > 0 && convertUnitChoice <= pArmy.Count())
                 {
-                    attacker = n - 1;
+                    attacker = convertUnitChoice - 1;
                 }
             }
             int target = -1;
@@ -41,43 +49,103 @@ namespace Netfram_Peli
             while (target < 0)
             {
                 targetChoice = AskTarget();
-                int nn = Convert.ToInt32(targetChoice);
+                int convertTargetChoice = Convert.ToInt32(targetChoice);
 
-                if (nn > 0 && nn <= eArmy.Count())
+                if (convertTargetChoice > 0 && convertTargetChoice <= eArmy.Count())
                 {
-                    target = nn - 1;
+                    target = convertTargetChoice - 1;
                 }
             }
-
-            string attack;
-            Units toRemove = null;
             while (true)
             {
                 if (eArmy[target].hp > 0)
                 {
-                    attack = Attack();
+                    Console.WriteLine("\nPress enter to attack");
+                    Console.ReadLine();
 
                     eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
-                    Console.WriteLine(pArmy[attacker] + " Attacks " + eArmy[target] + " , dealing " + pArmy[attacker].dmg);
-                    Console.WriteLine(eArmy[target] + " Has " + eArmy[target].hp + " HP");
+                    Console.WriteLine(pArmy[attacker] + " Attacks " + eArmy[target] + ". Dealing " + pArmy[attacker].dmg + " damage.");
+                    Console.WriteLine(eArmy[target] + " has " + eArmy[target].hp + " HP remaining.");
+
+                    Console.WriteLine("\nPress enter to continue");
+                    Console.ReadLine();
+                    break;
                 }
-                else if (eArmy[target].hp <= 0)
+            }
+            if (eArmy[target].hp <= 0)
+            {
+                eArmy.RemoveAt(target);
+            }
+            EnemyAttack();
+            GameStillOn();
+        }
+        #endregion
+
+        //Enemy Fighting
+        #region
+        public static void EnemyAttack()
+        {
+            Random rnd = new Random();
+
+            int eTarget = rnd.Next(pArmy.Count());
+            int eAttacker = rnd.Next(pArmy.Count());
+
+            while (true)
+            {
+                if (pArmy[eTarget].hp > 0)
                 {
-                    toRemove = eArmy[target];
-                    eArmy.Remove(toRemove);
+                    Console.WriteLine("Enemy's turn\n");
+
+                    pArmy[eTarget].hp = pArmy[eTarget].hp - eArmy[eAttacker].dmg;
+                    Console.WriteLine(eArmy[eAttacker] + " Attacks " + pArmy[eTarget] + ". Dealing " + eArmy[eAttacker].dmg + " damage.");
+                    Console.WriteLine(pArmy[eTarget] + " has " + pArmy[eTarget].hp + " HP remaining.");
+
+                    Console.WriteLine("\nPress enter to continue");
+                    Console.ReadLine();
+                    Console.Clear();
+                    break;
+                }
+            }
+            if (pArmy[eTarget].hp <= 0)
+            {
+                pArmy.RemoveAt(eTarget);
+            }
+        }
+        #endregion
+
+        //Check if list still have units
+        #region
+        static void GameStillOn()
+        {
+            while (true)
+            {
+                if (pArmy.Count() > 0 && eArmy.Count() > 0)
+                {
+                    PlayerFighting();
+                }
+                else if (pArmy.Count() == 0 || eArmy.Count() == 0)
+                {
                     break;
                 }
             }
         }
-
-        private static string Attack()
+        public static void WhatTeamWon()
         {
-            Console.WriteLine("\nPress enter to Attack!!");
-            return Console.ReadLine();
+            if (pArmy.Count() > eArmy.Count())
+            {
+                Console.WriteLine("Player WINS");
+            }
+            else if (eArmy.Count() > pArmy.Count())
+            {
+                Console.WriteLine("Enemy WINS");
+            }
         }
+        #endregion
+        // Asking user for unit and target
+        #region
         private static string AskUnit()
         {
-            Console.WriteLine("\nPlayer's turn: Choose unit by giving a number:");
+            Console.WriteLine("Player's turn: Choose unit by giving a number:\n");
             foreach (Units pUnit in pArmy)
             {
                 Console.WriteLine(pUnit.name);
@@ -87,12 +155,12 @@ namespace Netfram_Peli
         private static string AskTarget()
         {
             Console.WriteLine("\nChoose target:");
-            foreach (Units unit in eArmy)
-                {
-                    Console.WriteLine(unit.name);
-                }
-
+            foreach (Units eUnit in eArmy)
+            {
+                Console.WriteLine(eUnit.name);
+            }
             return Console.ReadLine();
         }
+        #endregion
     }
 }

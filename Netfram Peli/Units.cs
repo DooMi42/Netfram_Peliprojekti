@@ -8,9 +8,11 @@ namespace Netfram_Peli
 {
     public class Units
     {
+        // What unit has
         public string name { get; set; }
         public int hp { get; set; }
         public int dmg { get; set; }
+        // constructor
         public Units(string name, int hp, int dmg)
         {
             this.name = name;

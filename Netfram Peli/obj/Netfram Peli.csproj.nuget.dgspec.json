@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj": {}
+    "C:\\Users\\hurme\\source\\repos\\Netfram Peli\\Netfram Peli\\Netfram Peli.csproj": {}
   },
   "projects": {
-    "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj": {
+    "C:\\Users\\hurme\\source\\repos\\Netfram Peli\\Netfram Peli\\Netfram Peli.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj",
+        "projectUniqueName": "C:\\Users\\hurme\\source\\repos\\Netfram Peli\\Netfram Peli\\Netfram Peli.csproj",
         "projectName": "Netfram Peli",
-        "projectPath": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj",
-        "packagesPath": "C:\\Users\\s2000950\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\obj\\",
+        "projectPath": "C:\\Users\\hurme\\source\\repos\\Netfram Peli\\Netfram Peli\\Netfram Peli.csproj",
+        "packagesPath": "C:\\Users\\hurme\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\hurme\\source\\repos\\Netfram Peli\\Netfram Peli\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\s2000950\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hurme\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
