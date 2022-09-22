@@ -16,13 +16,13 @@ namespace Netfram_Peli
         #region
         public static void Init()
         {
-            pArmy.Add(new Units("Human Warrior", 100, 50));
-            pArmy.Add(new Units("Human Archer", 100, 50));
+            pArmy.Add(new Units("Human Warrior", 120, 30));
+            pArmy.Add(new Units("Human Archer", 110, 40));
             pArmy.Add(new Units("Human Mage", 100, 50));
 
-            eArmy.Add(new Units("Skeleton Warrior", 100, 50));
-            eArmy.Add(new Units("Skeleton Archer", 100, 50));
-            eArmy.Add(new Units("Skeleton Mage", 100, 50));
+            eArmy.Add(new Units("Skeleton Warrior", 140, 20));
+            eArmy.Add(new Units("Skeleton Archer", 120, 30));
+            eArmy.Add(new Units("Skeleton Mage", 100, 60));
         }
         #endregion
 
@@ -60,14 +60,22 @@ namespace Netfram_Peli
             {
                 if (eArmy[target].hp > 0)
                 {
-                    Console.WriteLine("\nPress enter to attack");
+                    WriteLine("\nPress enter to attack");
                     Console.ReadLine();
 
                     eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
-                    Console.WriteLine(pArmy[attacker] + " Attacks " + eArmy[target] + ". Dealing " + pArmy[attacker].dmg + " damage.");
-                    Console.WriteLine(eArmy[target] + " has " + eArmy[target].hp + " HP remaining.");
-
-                    Console.WriteLine("\nPress enter to continue");
+                    Write(pArmy[attacker].ToString(), ConsoleColor.DarkYellow);
+                    Write(" Attacks ");
+                    Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
+                    Write(". Dealing ");
+                    Write(pArmy[attacker].dmg.ToString(), ConsoleColor.DarkBlue); 
+                    Write(" damage.");
+                    Console.WriteLine();
+                    Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
+                    Write(" has ");
+                    Write(eArmy[target].hp.ToString(), ConsoleColor.DarkRed);
+                    Write(" HP remaining.\n");
+                    WriteLine("\nPress enter to continue");
                     Console.ReadLine();
                     break;
                 }
@@ -88,19 +96,29 @@ namespace Netfram_Peli
             Random rnd = new Random();
 
             int eTarget = rnd.Next(pArmy.Count());
-            int eAttacker = rnd.Next(pArmy.Count());
+            int eAttacker = rnd.Next(eArmy.Count());
 
-            while (true)
+            while (eArmy.Count() > 0)
             {
                 if (pArmy[eTarget].hp > 0)
                 {
-                    Console.WriteLine("Enemy's turn\n");
+                    WriteLine("Enemy's turn\n");
 
                     pArmy[eTarget].hp = pArmy[eTarget].hp - eArmy[eAttacker].dmg;
-                    Console.WriteLine(eArmy[eAttacker] + " Attacks " + pArmy[eTarget] + ". Dealing " + eArmy[eAttacker].dmg + " damage.");
-                    Console.WriteLine(pArmy[eTarget] + " has " + pArmy[eTarget].hp + " HP remaining.");
 
-                    Console.WriteLine("\nPress enter to continue");
+                    Write(eArmy[eAttacker].ToString(), ConsoleColor.DarkMagenta);
+                    Write(" Attacks ");
+                    Write(pArmy[eTarget].ToString(), ConsoleColor.DarkYellow);
+                    Write(". Dealing ");
+                    Write(eArmy[eAttacker].dmg.ToString(), ConsoleColor.DarkBlue);
+                    Write(" damage.");
+                    Console.WriteLine();
+                    Write(pArmy[eTarget].ToString(), ConsoleColor.DarkYellow);
+                    Write(" has ");
+                    Write(pArmy[eTarget].hp.ToString(), ConsoleColor.DarkRed);
+                    Write(" HP remaining.\n");
+
+                    WriteLine("\nPress enter to continue");
                     Console.ReadLine();
                     Console.Clear();
                     break;
@@ -133,33 +151,50 @@ namespace Netfram_Peli
         {
             if (pArmy.Count() > eArmy.Count())
             {
-                Console.WriteLine("Player WINS");
+                WriteLine("Congrats you destroyed all enemies and you WIN the game.");
             }
             else if (eArmy.Count() > pArmy.Count())
             {
-                Console.WriteLine("Enemy WINS");
+                WriteLine("Enemy destroyed all humans and WINS the game. Better luck next time!");
             }
         }
         #endregion
+
         // Asking user for unit and target
         #region
         private static string AskUnit()
         {
-            Console.WriteLine("Player's turn: Choose unit by giving a number:\n");
+            WriteLine("Player's turn: Choose unit by giving a number:\n");
             foreach (Units pUnit in pArmy)
             {
-                Console.WriteLine(pUnit.name);
+                WriteLine(pUnit.name, ConsoleColor.DarkYellow);
             }
             return Console.ReadLine();
         }
         private static string AskTarget()
         {
-            Console.WriteLine("\nChoose target:");
+            WriteLine("\nChoose target:\n");
             foreach (Units eUnit in eArmy)
             {
-                Console.WriteLine(eUnit.name);
+                WriteLine(eUnit.name, ConsoleColor.DarkMagenta);
             }
             return Console.ReadLine();
+        }
+        #endregion
+
+        //COLLORS
+        #region
+        public static void Write(string text, ConsoleColor color = ConsoleColor.DarkGreen)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(text);
+            Console.ResetColor();
+        }
+        public static void WriteLine(string text, ConsoleColor color = ConsoleColor.DarkGreen)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
         #endregion
     }

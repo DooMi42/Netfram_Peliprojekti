@@ -10,33 +10,30 @@ namespace Netfram_Peli
     {
         static void Main(string[] args)
         {
-            // Console Designs
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-
             // Calling Init from Battle.cs
             Battle.Init();
 
             // Starting the game
-            Console.WriteLine("Welcome to the game!\n" +
+            Battle.WriteLine("Welcome to the game!\n" +
                 "\nPlayer Army:");
             foreach (Units pUnit in Battle.pArmy)
             {
-                Console.WriteLine(pUnit.name);
+                Battle.WriteLine(pUnit.name, ConsoleColor.DarkYellow);
             }
 
-            Console.WriteLine("\nEnemy Army:");
+            Battle.WriteLine("\nEnemy Army:");
             foreach (Units eUnit in Battle.eArmy)
             {
-                Console.WriteLine(eUnit.name);
+                Battle.WriteLine(eUnit.name, ConsoleColor.DarkMagenta);
             }
             // Starting the fight
-            Console.WriteLine("\nBattle Begins.");
+            Battle.WriteLine("\nBattle Begins.");
             Console.ReadLine();
             Console.Clear();
 
             Battle.PlayerFighting();
             //Telling who won
-            Console.WriteLine("Thanks for playing");
+            Battle.WriteLine("Thanks for playing!\n");
             Battle.WhatTeamWon();
         }
     }
