@@ -28,51 +28,81 @@ namespace Netfram_Peli
         public static void PlayerFighting()
         {
             int attacker = -1;
-            string targetUnit;
+
             while (attacker < 0)
             {
                 WriteLine("Player's turn: Choose unit by giving a number:\n");
                 pArmy.ForEach(pUnit => WriteLine(pUnit.name, ConsoleColor.DarkYellow));
                 ConsoleKeyInfo unitChoice = Console.ReadKey();
-                targetUnit = unitChoice.Key.ToString();
-                int convertUnitChoice = Convert.ToInt32(targetUnit);
-                if (convertUnitChoice > 0 && convertUnitChoice <= pArmy.Count())
-                    attacker = convertUnitChoice - 1;
+                if (unitChoice.Key == ConsoleKey.D1 && 1 <= pArmy.Count())
+                {
+                    attacker = 0;
+                }
+                else if (unitChoice.Key == ConsoleKey.D2 && 2 <= pArmy.Count())
+                {
+                    attacker = 1;
+                }
+                else if (unitChoice.Key == ConsoleKey.D3 && 3 <= pArmy.Count())
+                {
+                    attacker = 2;
+                }
+                else
+                {
+                    attacker = -1;
+                    WriteLine("\nNot valid input.\n");
+                }
             }
             int target = -1;
-            string targetChoice;
+
             while (target < 0)
             {
-                targetChoice = AskTarget();
-                int convertTargetChoice = Convert.ToInt32(targetChoice);
-                if (convertTargetChoice > 0 && convertTargetChoice <= eArmy.Count())
-                    target = convertTargetChoice - 1;
+                WriteLine("\nChoose target:\n");
+                eArmy.ForEach(eUnit => WriteLine(eUnit.name, ConsoleColor.DarkMagenta));
+                ConsoleKeyInfo targetChoice = Console.ReadKey();
+                if (targetChoice.Key == ConsoleKey.D1 && 1 <= eArmy.Count())
+                {
+                    target = 0;
+                }
+                else if (targetChoice.Key == ConsoleKey.D2 && 2 <= eArmy.Count())
+                {
+                    target = 1;
+                }
+                else if (targetChoice.Key == ConsoleKey.D3 && 3 <= eArmy.Count())
+                {
+                    target = 2;
+                }
+                else
+                {
+                    target = -1;
+                    WriteLine("\nNot valid input.");
+                }
             }
             while (true)
             {
                 if (eArmy[target].hp > 0)
                 {
-                    WriteLine("\nPress enter to attack");
+                    WriteLine("\nPlayer turn!");
                     Console.ReadLine();
                     eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
                     Write(pArmy[attacker].ToString(), ConsoleColor.DarkYellow);
                     Write(" Attacks ");
                     Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
                     Write(". Dealing ");
-                    Write(pArmy[attacker].dmg.ToString(), ConsoleColor.DarkBlue); 
+                    Write(pArmy[attacker].dmg.ToString(), ConsoleColor.DarkBlue);
                     Write(" damage.");
                     Console.WriteLine();
                     Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
                     Write(" has ");
                     Write(eArmy[target].hp.ToString(), ConsoleColor.DarkRed);
                     Write(" HP remaining.\n");
-                    WriteLine("\nPress enter to continue");
+                    WriteLine("\nPress enter to continue!");
                     Console.ReadLine();
                     break;
                 }
             }
             if (eArmy[target].hp <= 0)
                 eArmy.RemoveAt(target);
+
             EnemyAttack();
             GameStillOn();
         }
@@ -101,7 +131,7 @@ namespace Netfram_Peli
                     Write(" has ");
                     Write(pArmy[eTarget].hp.ToString(), ConsoleColor.DarkRed);
                     Write(" HP remaining.\n");
-                    WriteLine("\nPress enter to continue");
+                    WriteLine("\nPress enter to continue!");
                     Console.ReadLine();
                     Console.Clear();
                     break;
@@ -137,21 +167,6 @@ namespace Netfram_Peli
             {
                 WriteLine("Enemy destroyed all humans and WINS the game. Better luck next time!");
             }
-        }
-        #endregion
-        // Asking user for unit and target
-        #region
-        private static string AskUnit()
-        {
-            WriteLine("Player's turn: Choose unit by giving a number:\n");
-            pArmy.ForEach(pUnit => WriteLine(pUnit.name, ConsoleColor.DarkYellow));
-            return Console.ReadLine();
-        }
-        private static string AskTarget()
-        {
-            WriteLine("\nChoose target:\n");
-            eArmy.ForEach(eUnit => WriteLine(eUnit.name, ConsoleColor.DarkMagenta));
-            return Console.ReadLine();
         }
         #endregion
         //COLLORS
