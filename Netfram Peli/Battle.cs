@@ -11,50 +11,42 @@ namespace Netfram_Peli
         //Army lists
         public static List<Units> pArmy = new List<Units>();
         public static List<Units> eArmy = new List<Units>();
-
         // Init the battle
         #region
         public static void Init()
         {
-            pArmy.Add(new Units("Human Warrior", 120, 30));
-            pArmy.Add(new Units("Human Archer", 110, 40));
-            pArmy.Add(new Units("Human Mage", 100, 50));
-
-            eArmy.Add(new Units("Skeleton Warrior", 140, 20));
-            eArmy.Add(new Units("Skeleton Archer", 120, 30));
-            eArmy.Add(new Units("Skeleton Mage", 100, 60));
+            pArmy.Add(new Units("Eivor", 120, 30));
+            pArmy.Add(new Units("Basim", 110, 40));
+            pArmy.Add(new Units("Astrid", 100, 50));
+            eArmy.Add(new Units("Rikiwulf", 140, 30));
+            eArmy.Add(new Units("Alrek", 120, 50));
+            eArmy.Add(new Units("Bjarke Broadside", 100, 70));
         }
         #endregion
-
         // Player Fighting
         #region
         public static void PlayerFighting()
         {
             int attacker = -1;
-            string unitChoice;
-
+            string targetUnit;
             while (attacker < 0)
             {
-                unitChoice = AskUnit();
-                int convertUnitChoice = Convert.ToInt32(unitChoice);
-
+                WriteLine("Player's turn: Choose unit by giving a number:\n");
+                pArmy.ForEach(pUnit => WriteLine(pUnit.name, ConsoleColor.DarkYellow));
+                ConsoleKeyInfo unitChoice = Console.ReadKey();
+                targetUnit = unitChoice.Key.ToString();
+                int convertUnitChoice = Convert.ToInt32(targetUnit);
                 if (convertUnitChoice > 0 && convertUnitChoice <= pArmy.Count())
-                {
                     attacker = convertUnitChoice - 1;
-                }
             }
             int target = -1;
             string targetChoice;
-
             while (target < 0)
             {
                 targetChoice = AskTarget();
                 int convertTargetChoice = Convert.ToInt32(targetChoice);
-
                 if (convertTargetChoice > 0 && convertTargetChoice <= eArmy.Count())
-                {
                     target = convertTargetChoice - 1;
-                }
             }
             while (true)
             {
@@ -62,7 +54,6 @@ namespace Netfram_Peli
                 {
                     WriteLine("\nPress enter to attack");
                     Console.ReadLine();
-
                     eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
                     Write(pArmy[attacker].ToString(), ConsoleColor.DarkYellow);
                     Write(" Attacks ");
@@ -81,31 +72,24 @@ namespace Netfram_Peli
                 }
             }
             if (eArmy[target].hp <= 0)
-            {
                 eArmy.RemoveAt(target);
-            }
             EnemyAttack();
             GameStillOn();
         }
         #endregion
-
         //Enemy Fighting
         #region
         public static void EnemyAttack()
         {
             Random rnd = new Random();
-
             int eTarget = rnd.Next(pArmy.Count());
             int eAttacker = rnd.Next(eArmy.Count());
-
             while (eArmy.Count() > 0)
             {
                 if (pArmy[eTarget].hp > 0)
                 {
                     WriteLine("Enemy's turn\n");
-
                     pArmy[eTarget].hp = pArmy[eTarget].hp - eArmy[eAttacker].dmg;
-
                     Write(eArmy[eAttacker].ToString(), ConsoleColor.DarkMagenta);
                     Write(" Attacks ");
                     Write(pArmy[eTarget].ToString(), ConsoleColor.DarkYellow);
@@ -117,7 +101,6 @@ namespace Netfram_Peli
                     Write(" has ");
                     Write(pArmy[eTarget].hp.ToString(), ConsoleColor.DarkRed);
                     Write(" HP remaining.\n");
-
                     WriteLine("\nPress enter to continue");
                     Console.ReadLine();
                     Console.Clear();
@@ -125,12 +108,9 @@ namespace Netfram_Peli
                 }
             }
             if (pArmy[eTarget].hp <= 0)
-            {
                 pArmy.RemoveAt(eTarget);
-            }
         }
         #endregion
-
         //Check if list still have units
         #region
         static void GameStillOn()
@@ -159,29 +139,21 @@ namespace Netfram_Peli
             }
         }
         #endregion
-
         // Asking user for unit and target
         #region
         private static string AskUnit()
         {
             WriteLine("Player's turn: Choose unit by giving a number:\n");
-            foreach (Units pUnit in pArmy)
-            {
-                WriteLine(pUnit.name, ConsoleColor.DarkYellow);
-            }
+            pArmy.ForEach(pUnit => WriteLine(pUnit.name, ConsoleColor.DarkYellow));
             return Console.ReadLine();
         }
         private static string AskTarget()
         {
             WriteLine("\nChoose target:\n");
-            foreach (Units eUnit in eArmy)
-            {
-                WriteLine(eUnit.name, ConsoleColor.DarkMagenta);
-            }
+            eArmy.ForEach(eUnit => WriteLine(eUnit.name, ConsoleColor.DarkMagenta));
             return Console.ReadLine();
         }
         #endregion
-
         //COLLORS
         #region
         public static void Write(string text, ConsoleColor color = ConsoleColor.DarkGreen)
