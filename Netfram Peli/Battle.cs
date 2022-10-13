@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace Netfram_Peli
 
             while (attacker < 0)
             {
-                WriteLine("Player's turn: Choose unit by giving a number:\n");
+                PlayerTurnText();
                 pArmy.ForEach(pUnit => WriteLine(pUnit.name + " (" + pUnit.hp + "/" + pUnit.maxHP + ") ", ConsoleColor.DarkYellow));
                 ConsoleKeyInfo unitChoice = Console.ReadKey();
                 if (unitChoice.Key == ConsoleKey.D1 && 1 <= pArmy.Count())
@@ -54,7 +55,21 @@ namespace Netfram_Peli
                     WriteLine("\nNot valid input.\n");
                 }
             }
+            Console.Clear();
+            PlayerTurnText();
+            for (int i = 0; i < pArmy.Count(); i++)
+            {
+                if (attacker == i)
+                {
+                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.Cyan);
+                }
+                else
+                {
+                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.DarkYellow);
+                }
+            }
             int target = -1;
+
             while (target < 0)
             {
                 WriteLine("\nChoose target:\n");
@@ -85,7 +100,7 @@ namespace Netfram_Peli
                     WriteLine("\nPlayer turn!");
                     Console.ReadLine();
                     eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
-                    Write(pArmy[attacker].ToString(), ConsoleColor.DarkYellow);
+                    Write(pArmy[attacker].ToString(), ConsoleColor.Cyan);
                     Write(" Attacks ");
                     Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
                     Write(". Dealing ");
@@ -202,6 +217,11 @@ namespace Netfram_Peli
                 Console.Clear();
                 Console.WriteLine(e.Message);
             }
+        }
+        public static void PlayerTurnText()
+        {
+            WriteLine("[---------- Message ----------]\n");
+            WriteLine("Player's turn: Choose unit by giving a number:\n");
         }
     }
 }
