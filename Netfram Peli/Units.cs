@@ -11,6 +11,7 @@ namespace Netfram_Peli
         // What unit has
         public string name { get; set; }
         public int hp { get; set; }
+        public int maxHP { get; set; }
         public int dmg { get; set; }
         // constructor
         public Units(string name, int hp, int dmg)
@@ -18,6 +19,7 @@ namespace Netfram_Peli
             this.name = name;
             this.hp = hp;
             this.dmg = dmg;
+            this.maxHP = maxHP + hp;
         }
         public override string ToString()
         {

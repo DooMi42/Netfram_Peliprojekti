@@ -18,6 +18,7 @@ namespace Netfram_Peli
             pArmy.Add(new Units("Eivor", 120, 30));
             pArmy.Add(new Units("Basim", 110, 40));
             pArmy.Add(new Units("Astrid", 100, 50));
+
             eArmy.Add(new Units("Rikiwulf", 140, 30));
             eArmy.Add(new Units("Alrek", 120, 50));
             eArmy.Add(new Units("Bjarke Broadside", 100, 70));
@@ -27,12 +28,13 @@ namespace Netfram_Peli
         #region
         public static void PlayerFighting()
         {
+
             int attacker = -1;
 
             while (attacker < 0)
             {
                 WriteLine("Player's turn: Choose unit by giving a number:\n");
-                pArmy.ForEach(pUnit => WriteLine(pUnit.name, ConsoleColor.DarkYellow));
+                pArmy.ForEach(pUnit => WriteLine(pUnit.name + " (" + pUnit.hp + "/" + pUnit.maxHP + ") ", ConsoleColor.DarkYellow));
                 ConsoleKeyInfo unitChoice = Console.ReadKey();
                 if (unitChoice.Key == ConsoleKey.D1 && 1 <= pArmy.Count())
                 {
@@ -53,11 +55,10 @@ namespace Netfram_Peli
                 }
             }
             int target = -1;
-
             while (target < 0)
             {
                 WriteLine("\nChoose target:\n");
-                eArmy.ForEach(eUnit => WriteLine(eUnit.name, ConsoleColor.DarkMagenta));
+                eArmy.ForEach(eUnit => WriteLine(eUnit.name + " (" + eUnit.hp + "/" + eUnit.maxHP + ") ", ConsoleColor.DarkMagenta));
                 ConsoleKeyInfo targetChoice = Console.ReadKey();
                 if (targetChoice.Key == ConsoleKey.D1 && 1 <= eArmy.Count())
                 {
@@ -184,5 +185,23 @@ namespace Netfram_Peli
             Console.ResetColor();
         }
         #endregion
+
+        public static int origRow;
+        public static int origCol;
+
+        public static void WriteAt(string s, int x, int y, ConsoleColor color = ConsoleColor.DarkGreen)
+        {
+            try
+            {
+                Console.ForegroundColor = color;
+                Console.SetCursorPosition(origCol + x, origRow + y);
+                Console.Write(s);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.Clear();
+                Console.WriteLine(e.Message);
+            }
+        }
     }
 }

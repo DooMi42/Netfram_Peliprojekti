@@ -10,14 +10,21 @@ namespace Netfram_Peli
     {
         static void Main(string[] args)
         {
+            Console.Clear();
             // Calling Init from Battle.cs
             Battle.Init();
             // Starting the game
-            Battle.WriteLine("Welcome to the game!\n\nPlayer Army:");
+            Battle.WriteLine("Welcome to the game!\n\nPlayer Army:  Enemy Army:");
+            Console.WriteLine();
             Battle.pArmy.ForEach(pUnit => Battle.WriteLine(pUnit.name, ConsoleColor.DarkYellow));
-            Battle.WriteLine("\nEnemy Army:");
-            Battle.eArmy.ForEach(eUnit => Battle.WriteLine(eUnit.name, ConsoleColor.DarkMagenta));
+            int y = 4;
+            foreach (var eUnit in Battle.eArmy)
+            {
+                Battle.WriteAt(eUnit.name, 15, y, ConsoleColor.DarkMagenta);
+                y++;
+            }
             // Starting the fight
+            Console.WriteLine();
             Battle.WriteLine("\nBattle Begins.");
             Console.ReadLine();
             Console.Clear();
