@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,43 +30,38 @@ namespace Netfram_Peli
         #region
         public static void PlayerFighting()
         {
-
             int attacker = -1;
 
             while (attacker < 0)
             {
-                PlayerTurnText();
+                WriteLine("[---------- Choices ----------]\n\nPlayer's turn: Choose unit by giving a number:\n");
                 pArmy.ForEach(pUnit => WriteLine(pUnit.name + " (" + pUnit.hp + "/" + pUnit.maxHP + ") ", ConsoleColor.DarkYellow));
                 ConsoleKeyInfo unitChoice = Console.ReadKey();
-                if (unitChoice.Key == ConsoleKey.D1 && 1 <= pArmy.Count())
+
+                switch (unitChoice.Key)
                 {
-                    attacker = 0;
+                    case ConsoleKey.D1:
+                        attacker = 0;
+                        break;
+                    case ConsoleKey.D2:
+                        attacker = 1;
+                        break;
+                    case ConsoleKey.D3:
+                        attacker = 2;
+                        break;
+                    default:
+                        attacker = -1;
+                        WriteLine("\nNot valid input.\n");
+                        continue;
                 }
-                else if (unitChoice.Key == ConsoleKey.D2 && 2 <= pArmy.Count())
+                if (pArmy[attacker].power == 1)
                 {
-                    attacker = 1;
+                    pArmy[attacker].power--;
                 }
-                else if (unitChoice.Key == ConsoleKey.D3 && 3 <= pArmy.Count())
-                {
-                    attacker = 2;
-                }
-                else
+                else if (pArmy[attacker].power == 0)
                 {
                     attacker = -1;
-                    WriteLine("\nNot valid input.\n");
-                }
-            }
-            Console.Clear();
-            PlayerTurnText();
-            for (int i = 0; i < pArmy.Count(); i++)
-            {
-                if (attacker == i)
-                {
-                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.Cyan);
-                }
-                else
-                {
-                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.DarkYellow);
+                    WriteLine("NOT READY TO USE");
                 }
             }
             int target = -1;
@@ -93,33 +89,63 @@ namespace Netfram_Peli
                     WriteLine("\nNot valid input.");
                 }
             }
+            Console.Clear();
+            WaitTime(0.2);
+            PlayerTurnText();
+            for (int i = 0; i < pArmy.Count(); i++)
+            {
+                if (attacker == i)
+                {
+                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.Cyan);
+                }
+                else
+                {
+                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.DarkYellow);
+                }
+            }
+            WaitTime(0.2);
+            TargetChoiceText();
+            for (int x = 0; x < eArmy.Count(); x++)
+            {
+                if (target == x)
+                {
+                    WriteLine(eArmy[x].name + " (" + eArmy[x].hp + "/" + eArmy[x].maxHP + ") ", ConsoleColor.White);
+                }
+                else
+                {
+                    WriteLine(eArmy[x].name + " (" + eArmy[x].hp + "/" + eArmy[x].maxHP + ") ", ConsoleColor.DarkMagenta);
+                }
+            }
+            WriteLine("\nPress enter to FIGHT!");
+            Console.ReadLine();
             while (true)
             {
                 if (eArmy[target].hp > 0)
                 {
-                    WriteLine("\nPlayer turn!");
-                    Console.ReadLine();
+                    WriteLine("Player Attacks!\n");
                     eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
                     Write(pArmy[attacker].ToString(), ConsoleColor.Cyan);
                     Write(" Attacks ");
-                    Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
+                    Write(eArmy[target].ToString(), ConsoleColor.White);
                     Write(". Dealing ");
                     Write(pArmy[attacker].dmg.ToString(), ConsoleColor.DarkBlue);
                     Write(" damage.");
                     Console.WriteLine();
-                    Write(eArmy[target].ToString(), ConsoleColor.DarkMagenta);
+                    Write(eArmy[target].ToString(), ConsoleColor.White);
                     Write(" has ");
                     Write(eArmy[target].hp.ToString(), ConsoleColor.DarkRed);
                     Write(" HP remaining.\n");
-                    WriteLine("\nPress enter to continue!");
-                    Console.ReadLine();
+
                     break;
                 }
             }
             if (eArmy[target].hp <= 0)
                 eArmy.RemoveAt(target);
-
+            //Going to enemy attack
             EnemyAttack();
+            //Then going to check if player units are ready
+            AreUnitsReady();
+            //After that checking if game is still on
             GameStillOn();
         }
         #endregion
@@ -134,7 +160,7 @@ namespace Netfram_Peli
             {
                 if (pArmy[eTarget].hp > 0)
                 {
-                    WriteLine("Enemy's turn\n");
+                    WriteLine("\nEnemy Attacks\n");
                     pArmy[eTarget].hp = pArmy[eTarget].hp - eArmy[eAttacker].dmg;
                     Write(eArmy[eAttacker].ToString(), ConsoleColor.DarkMagenta);
                     Write(" Attacks ");
@@ -157,7 +183,35 @@ namespace Netfram_Peli
                 pArmy.RemoveAt(eTarget);
         }
         #endregion
-        //Check if list still have units
+
+        //Checking if player units are ready
+        #region
+        static void AreUnitsReady()
+        {
+            int unitsReady = 0;
+
+            for (int i = 0; i < pArmy.Count(); i++)
+            {
+                if (pArmy[i].power > 0)
+                {
+                    unitsReady++;
+                }
+            }
+
+            if (unitsReady == 1)
+            {
+                GameStillOn();
+            }
+            else if (unitsReady == 0)
+            {
+                for (int i = 0; i < pArmy.Count(); i++)
+                {
+                    pArmy[i].power++;
+                }
+            }
+        }
+        #endregion
+        //Check if lists still have units
         #region
         static void GameStillOn()
         {
@@ -181,7 +235,7 @@ namespace Netfram_Peli
             }
             else if (eArmy.Count() > pArmy.Count())
             {
-                WriteLine("Enemy destroyed all humans and WINS the game. Better luck next time!");
+                WriteLine("Enemy destroyed your vikings and WINS the game. Better luck next time!");
             }
         }
         #endregion
@@ -201,6 +255,8 @@ namespace Netfram_Peli
         }
         #endregion
 
+        //This allows to print text on set position
+        #region
         public static int origRow;
         public static int origCol;
 
@@ -218,10 +274,26 @@ namespace Netfram_Peli
                 Console.WriteLine(e.Message);
             }
         }
+
+        #endregion
+
+        //TEXTS that replaces after choosing attacker & target
+        #region
         public static void PlayerTurnText()
         {
-            WriteLine("[---------- Message ----------]\n");
-            WriteLine("Player's turn: Choose unit by giving a number:\n");
+            WriteLine("[---------- Fight ----------]\n");
+            WriteLine("Attacker Locked:\n");
+        }
+        public static void TargetChoiceText()
+        {
+            WriteLine("\nTarget Locked:\n");
+        }
+        #endregion
+
+        //Using for text to wait before appearing
+        public static void WaitTime(double seconds)
+        {
+            System.Threading.Thread.Sleep((int)(seconds * 1000));
         }
     }
 }
