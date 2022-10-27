@@ -32,6 +32,7 @@ namespace Netfram_Peli
         {
             int attacker = -1;
 
+            //Asking for the attacker
             while (attacker < 0)
             {
                 WriteLine("[---------- Choices ----------]\n\nPlayer's turn: Choose unit by giving a number:\n");
@@ -66,29 +67,32 @@ namespace Netfram_Peli
             }
             int target = -1;
 
+            //Asking for the target
             while (target < 0)
             {
                 WriteLine("\nChoose target:\n");
                 eArmy.ForEach(eUnit => WriteLine(eUnit.name + " (" + eUnit.hp + "/" + eUnit.maxHP + ") ", ConsoleColor.DarkMagenta));
                 ConsoleKeyInfo targetChoice = Console.ReadKey();
-                if (targetChoice.Key == ConsoleKey.D1 && 1 <= eArmy.Count())
+
+                switch (targetChoice.Key)
                 {
-                    target = 0;
-                }
-                else if (targetChoice.Key == ConsoleKey.D2 && 2 <= eArmy.Count())
-                {
-                    target = 1;
-                }
-                else if (targetChoice.Key == ConsoleKey.D3 && 3 <= eArmy.Count())
-                {
-                    target = 2;
-                }
-                else
-                {
-                    target = -1;
-                    WriteLine("\nNot valid input.");
+                    case ConsoleKey.D1:
+                        target = 0;
+                        break;
+                    case ConsoleKey.D2:
+                        target = 1;
+                        break;
+                    case ConsoleKey.D3:
+                        target = 2;
+                        break;
+                    default:
+                        target = -1;
+                        WriteLine("\nNot valid input.");
+                        continue;
                 }
             }
+
+            //Printing unit choices
             Console.Clear();
             WaitTime(0.2);
             PlayerTurnText();
@@ -118,6 +122,8 @@ namespace Netfram_Peli
             }
             WriteLine("\nPress enter to FIGHT!");
             Console.ReadLine();
+
+            //Printing the fight result
             while (true)
             {
                 if (eArmy[target].hp > 0)
@@ -145,6 +151,10 @@ namespace Netfram_Peli
             EnemyAttack();
             //Then going to check if player units are ready
             AreUnitsReady();
+
+            Stack<string> Unitss = new Stack<string>();
+            Unitss.Push("" + pArmy[attacker].hp);
+            
             //After that checking if game is still on
             GameStillOn();
         }
