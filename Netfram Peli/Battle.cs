@@ -13,6 +13,11 @@ namespace Netfram_Peli
         //Army lists
         public static List<Units> pArmy = new List<Units>();
         public static List<Units> eArmy = new List<Units>();
+
+        public static int bAttacker = -1;
+        public static int bTarget = -1;
+        public static int bEnemyAttacker = -1;
+        public static int bEnemyTarget = -1;
         // Init the battle
         #region
         public static void Init()
@@ -31,7 +36,6 @@ namespace Netfram_Peli
         public static void PlayerFighting()
         {
             int attacker = -1;
-
             //Asking for the attacker
             while (attacker < 0)
             {
@@ -91,7 +95,18 @@ namespace Netfram_Peli
                         continue;
                 }
             }
-
+            Stack<Units> pUndo = new Stack<Units>();
+            Stack<Units> eUndo = new Stack<Units>();
+            bAttacker = attacker;
+            bTarget = target;
+            for (int i = 0; i < pArmy.Count(); i++)
+            {
+                pUndo.Push(pArmy[i]);
+            }
+            for (int i = 0; i < eArmy.Count(); i++)
+            {
+                eUndo.Push(eArmy[i]);
+            }
             //Printing unit choices
             Console.Clear();
             WaitTime(0.2);
@@ -151,10 +166,21 @@ namespace Netfram_Peli
             EnemyAttack();
             //Then going to check if player units are ready
             AreUnitsReady();
+            //Going to UNDO
+            WriteLine("Undo? Use Z to undo and TAB to continue with current settings");
+            ConsoleKeyInfo undochoice = Console.ReadKey();
+            switch (undochoice.Key)
+            {
+                case ConsoleKey.Z:
+                    WriteLine("Lets undo this round");
+                    pUndo.Peek();
+                    eUndo.Peek();
 
-            Stack<string> Unitss = new Stack<string>();
-            Unitss.Push("" + pArmy[attacker].hp);
-            
+                    break;
+                case ConsoleKey.Tab:
+                    WriteLine("Just continuing");
+                    break;
+            }
             //After that checking if game is still on
             GameStillOn();
         }
@@ -166,6 +192,9 @@ namespace Netfram_Peli
             Random rnd = new Random();
             int eTarget = rnd.Next(pArmy.Count());
             int eAttacker = rnd.Next(eArmy.Count());
+
+            bEnemyTarget = eTarget;
+            bEnemyAttacker = eAttacker;
             while (eArmy.Count() > 0)
             {
                 if (pArmy[eTarget].hp > 0)
@@ -193,7 +222,6 @@ namespace Netfram_Peli
                 pArmy.RemoveAt(eTarget);
         }
         #endregion
-
         //Checking if player units are ready
         #region
         static void AreUnitsReady()
@@ -237,6 +265,7 @@ namespace Netfram_Peli
                 }
             }
         }
+        //Telling which team won the game
         public static void WhatTeamWon()
         {
             if (pArmy.Count() > eArmy.Count())
