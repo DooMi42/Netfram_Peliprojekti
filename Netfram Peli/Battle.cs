@@ -14,8 +14,8 @@ namespace Netfram_Peli
         public static List<Units> pArmy = new List<Units>();
         public static List<Units> eArmy = new List<Units>();
 
-        public static List<int> pArmySavedHP = new List<int>();
-        public static List<int> eArmySavedHP = new List<int>();
+        public static int[] pArmySavedHP = new int[3];
+        public static int[] eArmySavedHP = new int[3];
         // Init the battle
         #region
         public static void Init()
@@ -27,16 +27,6 @@ namespace Netfram_Peli
             eArmy.Add(new Units("Rikiwulf", 140, 30));
             eArmy.Add(new Units("Alrek", 120, 50));
             eArmy.Add(new Units("Bjarke Broadside", 100, 70));
-
-            foreach (var pUnit in pArmy)
-            {
-                pArmySavedHP.Add(pUnit.Hp);
-            }
-
-            foreach (var eUnit in eArmy)
-            {
-                eArmySavedHP.Add(eUnit.Hp);
-            }
         }
         #endregion
         // Player Fighting
@@ -44,6 +34,7 @@ namespace Netfram_Peli
         public static void PlayerFighting()
         {
             int attacker = -1;
+
             for (int i = 0; i < pArmy.Count(); i++)
             {
                 pArmySavedHP[i] = pArmy[i].Hp;
@@ -162,23 +153,23 @@ namespace Netfram_Peli
                     break;
                 }
             }
-
+            //Enemy Unit Died
             if (enemy.Hp <= 0)
                 eArmy.RemoveAt(target);
 
             //Going to enemy attack
             EnemyAttack();
+
             //Then going to check if player units are ready
             AreUnitsReady();
-            //After that checking if game is still on
-            //Going to UNDO
-            TEST();
-            WriteLine("Undo? Use Z to undo and TAB to continue with current settings");
+
+            //Going to Ask if player wants to UNDO
+            UndoAskText();
             ConsoleKeyInfo undochoice = Console.ReadKey();
             switch (undochoice.Key)
             {
                 case ConsoleKey.Z:
-                    WriteLine("Lets undo this round");
+                    WriteLine("Lets undo this round dmg");
                         for (int i = 0; i < pArmy.Count(); i++)
                         {
                             pArmy[i].Hp = pArmySavedHP[i];
@@ -192,6 +183,8 @@ namespace Netfram_Peli
                     WriteLine("Just continuing");
                     break;
             }
+
+            //After that checking if game is still on
             GameStillOn();
         }
         #endregion
@@ -226,7 +219,7 @@ namespace Netfram_Peli
                 Console.ReadLine();
                 Console.Clear();
             }
-
+            //Player unit died
             if (pArmy[eTarget].Hp <= 0)
                 pArmy.RemoveAt(eTarget);
         }
@@ -247,7 +240,7 @@ namespace Netfram_Peli
 
             if (unitsReady == 1)
             {
-                TEST();
+                UndoAskText();
             }
             else if (unitsReady == 0)
             {
@@ -257,9 +250,9 @@ namespace Netfram_Peli
                 }
             }
         }
-        static void TEST()
+        static void UndoAskText()
         {
-            WriteLine("YOU WANT TO UNDO?");
+            WriteLine("You want to Undo? Use Z to undo. OR TAB to continue with current settings");
         }
         #endregion
         //Check if lists still have units
