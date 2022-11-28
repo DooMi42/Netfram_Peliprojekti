@@ -14,10 +14,8 @@ namespace Netfram_Peli
         public static List<Units> pArmy = new List<Units>();
         public static List<Units> eArmy = new List<Units>();
 
-        public static int bAttacker = -1;
-        public static int bTarget = -1;
-        public static int bEnemyAttacker = -1;
-        public static int bEnemyTarget = -1;
+        public static List<int> pArmySavedHP = new List<int>();
+        public static List<int> eArmySavedHP = new List<int>();
         // Init the battle
         #region
         public static void Init()
@@ -29,6 +27,16 @@ namespace Netfram_Peli
             eArmy.Add(new Units("Rikiwulf", 140, 30));
             eArmy.Add(new Units("Alrek", 120, 50));
             eArmy.Add(new Units("Bjarke Broadside", 100, 70));
+
+            foreach (var pUnit in pArmy)
+            {
+                pArmySavedHP.Add(pUnit.Hp);
+            }
+
+            foreach (var eUnit in eArmy)
+            {
+                eArmySavedHP.Add(eUnit.Hp);
+            }
         }
         #endregion
         // Player Fighting
@@ -36,11 +44,20 @@ namespace Netfram_Peli
         public static void PlayerFighting()
         {
             int attacker = -1;
+            for (int i = 0; i < pArmy.Count(); i++)
+            {
+                pArmySavedHP[i] = pArmy[i].Hp;
+            }
+            for (int i = 0; i < eArmy.Count(); i++)
+            {
+                eArmySavedHP[i] = eArmy[i].Hp;
+            }
+            
             //Asking for the attacker
             while (attacker < 0)
             {
                 WriteLine("[---------- Choices ----------]\n\nPlayer's turn: Choose unit by giving a number:\n");
-                pArmy.ForEach(pUnit => WriteLine(pUnit.name + " (" + pUnit.hp + "/" + pUnit.maxHP + ") ", ConsoleColor.DarkYellow));
+                pArmy.ForEach(pUnit => WriteLine(pUnit.Name + " (" + pUnit.Hp + "/" + pUnit.MaxHP + ") ", ConsoleColor.DarkYellow));
                 ConsoleKeyInfo unitChoice = Console.ReadKey();
 
                 switch (unitChoice.Key)
@@ -59,11 +76,11 @@ namespace Netfram_Peli
                         WriteLine("\nNot valid input.\n");
                         continue;
                 }
-                if (pArmy[attacker].power == 1)
+                if (pArmy[attacker].Power == 1)
                 {
-                    pArmy[attacker].power--;
+                    pArmy[attacker].Power--;
                 }
-                else if (pArmy[attacker].power == 0)
+                else if (pArmy[attacker].Power == 0)
                 {
                     attacker = -1;
                     WriteLine("NOT READY TO USE");
@@ -75,7 +92,7 @@ namespace Netfram_Peli
             while (target < 0)
             {
                 WriteLine("\nChoose target:\n");
-                eArmy.ForEach(eUnit => WriteLine(eUnit.name + " (" + eUnit.hp + "/" + eUnit.maxHP + ") ", ConsoleColor.DarkMagenta));
+                eArmy.ForEach(eUnit => WriteLine(eUnit.Name + " (" + eUnit.Hp + "/" + eUnit.MaxHP + ") ", ConsoleColor.DarkMagenta));
                 ConsoleKeyInfo targetChoice = Console.ReadKey();
 
                 switch (targetChoice.Key)
@@ -95,18 +112,8 @@ namespace Netfram_Peli
                         continue;
                 }
             }
-            Stack<Units> pUndo = new Stack<Units>();
-            Stack<Units> eUndo = new Stack<Units>();
-            bAttacker = attacker;
-            bTarget = target;
-            for (int i = 0; i < pArmy.Count(); i++)
-            {
-                pUndo.Push(pArmy[i]);
-            }
-            for (int i = 0; i < eArmy.Count(); i++)
-            {
-                eUndo.Push(eArmy[i]);
-            }
+            Units enemy = eArmy[target];
+
             //Printing unit choices
             Console.Clear();
             WaitTime(0.2);
@@ -115,73 +122,76 @@ namespace Netfram_Peli
             {
                 if (attacker == i)
                 {
-                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.Cyan);
+                    WriteLine(pArmy[i].Name + " (" + pArmy[i].Hp + "/" + pArmy[i].MaxHP + ") ", ConsoleColor.Cyan);
                 }
                 else
                 {
-                    WriteLine(pArmy[i].name + " (" + pArmy[i].hp + "/" + pArmy[i].maxHP + ") ", ConsoleColor.DarkYellow);
+                    WriteLine(pArmy[i].Name + " (" + pArmy[i].Hp + "/" + pArmy[i].MaxHP + ") ", ConsoleColor.DarkYellow);
                 }
             }
             WaitTime(0.2);
+            
             TargetChoiceText();
             for (int x = 0; x < eArmy.Count(); x++)
             {
-                if (target == x)
-                {
-                    WriteLine(eArmy[x].name + " (" + eArmy[x].hp + "/" + eArmy[x].maxHP + ") ", ConsoleColor.White);
-                }
-                else
-                {
-                    WriteLine(eArmy[x].name + " (" + eArmy[x].hp + "/" + eArmy[x].maxHP + ") ", ConsoleColor.DarkMagenta);
-                }
+                WriteLine(eArmy[x].Name + " (" + eArmy[x].Hp + "/" + eArmy[x].MaxHP + ") ", target == x ? ConsoleColor.White : ConsoleColor.DarkMagenta);
             }
+
             WriteLine("\nPress enter to FIGHT!");
             Console.ReadLine();
 
             //Printing the fight result
             while (true)
             {
-                if (eArmy[target].hp > 0)
+                if (enemy.Hp > 0)
                 {
                     WriteLine("Player Attacks!\n");
-                    eArmy[target].hp = eArmy[target].hp - pArmy[attacker].dmg;
+                    enemy.Hp = enemy.Hp - pArmy[attacker].Dmg;
                     Write(pArmy[attacker].ToString(), ConsoleColor.Cyan);
                     Write(" Attacks ");
-                    Write(eArmy[target].ToString(), ConsoleColor.White);
+                    Write(enemy.ToString(), ConsoleColor.White);
                     Write(". Dealing ");
-                    Write(pArmy[attacker].dmg.ToString(), ConsoleColor.DarkBlue);
+                    Write(pArmy[attacker].Dmg.ToString(), ConsoleColor.DarkBlue);
                     Write(" damage.");
                     Console.WriteLine();
-                    Write(eArmy[target].ToString(), ConsoleColor.White);
+                    Write(enemy.ToString(), ConsoleColor.White);
                     Write(" has ");
-                    Write(eArmy[target].hp.ToString(), ConsoleColor.DarkRed);
+                    Write(enemy.Hp.ToString(), ConsoleColor.DarkRed);
                     Write(" HP remaining.\n");
 
                     break;
                 }
             }
-            if (eArmy[target].hp <= 0)
+
+            if (enemy.Hp <= 0)
                 eArmy.RemoveAt(target);
+
             //Going to enemy attack
             EnemyAttack();
             //Then going to check if player units are ready
             AreUnitsReady();
+            //After that checking if game is still on
             //Going to UNDO
+            TEST();
             WriteLine("Undo? Use Z to undo and TAB to continue with current settings");
             ConsoleKeyInfo undochoice = Console.ReadKey();
             switch (undochoice.Key)
             {
                 case ConsoleKey.Z:
                     WriteLine("Lets undo this round");
-                    pUndo.Peek();
-                    eUndo.Peek();
-
+                        for (int i = 0; i < pArmy.Count(); i++)
+                        {
+                            pArmy[i].Hp = pArmySavedHP[i];
+                        }
+                        for (int i = 0; i < eArmy.Count(); i++)
+                        {
+                            eArmy[i].Hp = eArmySavedHP[i];
+                        }
                     break;
                 case ConsoleKey.Tab:
                     WriteLine("Just continuing");
                     break;
             }
-            //After that checking if game is still on
             GameStillOn();
         }
         #endregion
@@ -193,32 +203,31 @@ namespace Netfram_Peli
             int eTarget = rnd.Next(pArmy.Count());
             int eAttacker = rnd.Next(eArmy.Count());
 
-            bEnemyTarget = eTarget;
-            bEnemyAttacker = eAttacker;
-            while (eArmy.Count() > 0)
+            Units enemysTarget = pArmy[eTarget];
+            Units enemyAttacker = eArmy[eAttacker];
+
+
+            if (eArmy.Any() && enemysTarget.Hp > 0)
             {
-                if (pArmy[eTarget].hp > 0)
-                {
-                    WriteLine("\nEnemy Attacks\n");
-                    pArmy[eTarget].hp = pArmy[eTarget].hp - eArmy[eAttacker].dmg;
-                    Write(eArmy[eAttacker].ToString(), ConsoleColor.DarkMagenta);
-                    Write(" Attacks ");
-                    Write(pArmy[eTarget].ToString(), ConsoleColor.DarkYellow);
-                    Write(". Dealing ");
-                    Write(eArmy[eAttacker].dmg.ToString(), ConsoleColor.DarkBlue);
-                    Write(" damage.");
-                    Console.WriteLine();
-                    Write(pArmy[eTarget].ToString(), ConsoleColor.DarkYellow);
-                    Write(" has ");
-                    Write(pArmy[eTarget].hp.ToString(), ConsoleColor.DarkRed);
-                    Write(" HP remaining.\n");
-                    WriteLine("\nPress enter to continue!");
-                    Console.ReadLine();
-                    Console.Clear();
-                    break;
-                }
+                WriteLine("\nEnemy Attacks\n");        
+                enemysTarget.Hp = enemysTarget.Hp - enemyAttacker.Dmg;
+                Write(enemyAttacker.ToString(), ConsoleColor.DarkMagenta);
+                Write(" Attacks ");
+                Write(enemysTarget.ToString(), ConsoleColor.DarkYellow);
+                Write(". Dealing ");
+                Write(enemyAttacker.Dmg.ToString(), ConsoleColor.DarkBlue);
+                Write(" damage.");
+                Console.WriteLine();
+                Write(enemysTarget.ToString(), ConsoleColor.DarkYellow);
+                Write(" has ");
+                Write(enemysTarget.Hp.ToString(), ConsoleColor.DarkRed);
+                Write(" HP remaining.\n");
+                WriteLine("\nPress enter to continue!");
+                Console.ReadLine();
+                Console.Clear();
             }
-            if (pArmy[eTarget].hp <= 0)
+
+            if (pArmy[eTarget].Hp <= 0)
                 pArmy.RemoveAt(eTarget);
         }
         #endregion
@@ -230,7 +239,7 @@ namespace Netfram_Peli
 
             for (int i = 0; i < pArmy.Count(); i++)
             {
-                if (pArmy[i].power > 0)
+                if (pArmy[i].Power > 0)
                 {
                     unitsReady++;
                 }
@@ -238,15 +247,19 @@ namespace Netfram_Peli
 
             if (unitsReady == 1)
             {
-                GameStillOn();
+                TEST();
             }
             else if (unitsReady == 0)
             {
                 for (int i = 0; i < pArmy.Count(); i++)
                 {
-                    pArmy[i].power++;
+                    pArmy[i].Power++;
                 }
             }
+        }
+        static void TEST()
+        {
+            WriteLine("YOU WANT TO UNDO?");
         }
         #endregion
         //Check if lists still have units
