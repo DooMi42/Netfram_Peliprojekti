@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +16,10 @@ namespace Netfram_Peli
         public static List<Units> pArmy = new List<Units>();
         public static List<Units> eArmy = new List<Units>();
 
-        public static int[] pArmySavedHP = new int[3];
-        public static int[] eArmySavedHP = new int[3];
+        public static List<TurnState> previousTurns = new List<TurnState>();
+
+        public static bool undotest = false;
+
         // Init the battle
         #region
         public static void Init()
@@ -35,15 +39,41 @@ namespace Netfram_Peli
         {
             int attacker = -1;
 
+            TurnState State = new TurnState();
             for (int i = 0; i < pArmy.Count(); i++)
             {
-                pArmySavedHP[i] = pArmy[i].Hp;
+                State.playerHPs.Add(pArmy[i].Hp);
             }
             for (int i = 0; i < eArmy.Count(); i++)
             {
-                eArmySavedHP[i] = eArmy[i].Hp;
+                State.enemyHPs.Add(eArmy[i].Hp);
             }
-            
+            previousTurns.Add(State);
+
+            while (undotest == true)
+            {
+                WriteLine("You want to undo? Press Z if not press TAB.");
+                ConsoleKeyInfo undoing = Console.ReadKey();
+                switch (undoing.Key)
+                {
+                    case ConsoleKey.Z:
+                        if (undotest = true && previousTurns.Count > 0) 
+                        { 
+                        Undo();
+                        }
+                        continue;
+                    case ConsoleKey.Tab:
+                        WriteLine("Continuing the game.");
+                        undotest = false;
+                        break;
+                    default:
+                        WriteLine("Not a valid input.");
+                        undotest = false;
+                        continue;
+                }
+
+            }
+
             //Asking for the attacker
             while (attacker < 0)
             {
@@ -121,7 +151,7 @@ namespace Netfram_Peli
                 }
             }
             WaitTime(0.2);
-            
+
             TargetChoiceText();
             for (int x = 0; x < eArmy.Count(); x++)
             {
@@ -160,29 +190,9 @@ namespace Netfram_Peli
             //Going to enemy attack
             EnemyAttack();
 
+            undotest = true;
             //Then going to check if player units are ready
             AreUnitsReady();
-
-            //Going to Ask if player wants to UNDO
-            UndoAskText();
-            ConsoleKeyInfo undochoice = Console.ReadKey();
-            switch (undochoice.Key)
-            {
-                case ConsoleKey.Z:
-                    WriteLine("Lets undo this round dmg");
-                        for (int i = 0; i < pArmy.Count(); i++)
-                        {
-                            pArmy[i].Hp = pArmySavedHP[i];
-                        }
-                        for (int i = 0; i < eArmy.Count(); i++)
-                        {
-                            eArmy[i].Hp = eArmySavedHP[i];
-                        }
-                    break;
-                case ConsoleKey.Tab:
-                    WriteLine("Just continuing");
-                    break;
-            }
 
             //After that checking if game is still on
             GameStillOn();
@@ -202,7 +212,7 @@ namespace Netfram_Peli
 
             if (eArmy.Any() && enemysTarget.Hp > 0)
             {
-                WriteLine("\nEnemy Attacks\n");        
+                WriteLine("\nEnemy Attacks\n");
                 enemysTarget.Hp = enemysTarget.Hp - enemyAttacker.Dmg;
                 Write(enemyAttacker.ToString(), ConsoleColor.DarkMagenta);
                 Write(" Attacks ");
@@ -240,7 +250,7 @@ namespace Netfram_Peli
 
             if (unitsReady == 1)
             {
-                UndoAskText();
+                GameStillOn();
             }
             else if (unitsReady == 0)
             {
@@ -249,10 +259,6 @@ namespace Netfram_Peli
                     pArmy[i].Power++;
                 }
             }
-        }
-        static void UndoAskText()
-        {
-            WriteLine("You want to Undo? Use Z to undo. OR TAB to continue with current settings");
         }
         #endregion
         //Check if lists still have units
@@ -305,6 +311,8 @@ namespace Netfram_Peli
         public static int origRow;
         public static int origCol;
 
+        public List<TurnState> PreviousTurns { get => previousTurns; set => previousTurns = value; }
+
         public static void WriteAt(string s, int x, int y, ConsoleColor color = ConsoleColor.DarkGreen)
         {
             try
@@ -339,6 +347,27 @@ namespace Netfram_Peli
         public static void WaitTime(double seconds)
         {
             System.Threading.Thread.Sleep((int)(seconds * 1000));
+        }
+        public static void Undo()
+        {
+            WriteLine("Lets undo this round dmg");
+            if (previousTurns.Count > 0)
+            {
+                int lastIndex = previousTurns.Count - 1;
+
+                TurnState last = previousTurns[lastIndex];
+
+                for (int i = 0; i < pArmy.Count(); i++)
+                {
+                    pArmy[i].Hp = last.playerHPs[i];
+                }
+                for (int i = 0; i < eArmy.Count(); i++)
+                {
+                    eArmy[i].Hp = last.enemyHPs[i];
+                }
+
+                previousTurns.RemoveAt(lastIndex);
+            }
         }
     }
 }

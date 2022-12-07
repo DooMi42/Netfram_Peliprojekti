@@ -15,11 +15,18 @@ namespace Netfram_Peli
             Battle.Init();
 
             // Starting the game
+            Battle.WriteLine("VIKING FIGHT!");
+            Battle.WriteLine("\nWelcome to the game:");
+            Battle.WriteLine("\n\n\nPress enter to continue:");
+            Console.ReadLine();
+            Console.Clear();
+
+            //Tell to player about the armies
             Battle.WriteLine("[---------- Status ----------]\n");
-            Battle.WriteLine("Welcome to the game!\n\nPlayer Army:  Enemy Army:");
+            Battle.WriteLine("\nPlayer Army:  Enemy Army:");
             Console.WriteLine();
             Battle.pArmy.ForEach(pUnit => Battle.WriteLine(pUnit.Name, ConsoleColor.DarkYellow));
-            int y = 6;
+            int y = 5;
             foreach (var eUnit in Battle.eArmy)
             {
                 Battle.WriteAt(eUnit.Name, 15, y, ConsoleColor.DarkMagenta);
