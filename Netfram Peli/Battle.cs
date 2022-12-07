@@ -57,11 +57,16 @@ namespace Netfram_Peli
                 switch (undoing.Key)
                 {
                     case ConsoleKey.Z:
-                        if (undotest = true && previousTurns.Count > 0) 
+                        if (previousTurns.Count > 0) 
                         { 
                         Undo();
                         }
-                        continue;
+                        else
+                        {
+                            WriteLine("Nothing to undo.");
+                            undotest = false;
+                        }
+                        break;
                     case ConsoleKey.Tab:
                         WriteLine("Continuing the game.");
                         undotest = false;
@@ -69,7 +74,7 @@ namespace Netfram_Peli
                     default:
                         WriteLine("Not a valid input.");
                         undotest = false;
-                        continue;
+                        break;
                 }
 
             }
@@ -80,6 +85,7 @@ namespace Netfram_Peli
                 WriteLine("[---------- Choices ----------]\n\nPlayer's turn: Choose unit by giving a number:\n");
                 pArmy.ForEach(pUnit => WriteLine(pUnit.Name + " (" + pUnit.Hp + "/" + pUnit.MaxHP + ") ", ConsoleColor.DarkYellow));
                 ConsoleKeyInfo unitChoice = Console.ReadKey();
+                attacker = -1;
 
                 switch (unitChoice.Key)
                 {
@@ -103,8 +109,12 @@ namespace Netfram_Peli
                 }
                 else if (pArmy[attacker].Power == 0)
                 {
-                    attacker = -1;
                     WriteLine("NOT READY TO USE");
+                }
+                if (pArmy[attacker].Hp <= 0)
+                {
+                    attacker = -1;
+                    WriteLine("HES DEAD!");
                 }
             }
             int target = -1;
@@ -115,6 +125,7 @@ namespace Netfram_Peli
                 WriteLine("\nChoose target:\n");
                 eArmy.ForEach(eUnit => WriteLine(eUnit.Name + " (" + eUnit.Hp + "/" + eUnit.MaxHP + ") ", ConsoleColor.DarkMagenta));
                 ConsoleKeyInfo targetChoice = Console.ReadKey();
+                target = -1;
 
                 switch (targetChoice.Key)
                 {
@@ -132,6 +143,11 @@ namespace Netfram_Peli
                         WriteLine("\nNot valid input.");
                         continue;
                 }
+                if (eArmy[target].Hp <= 0)
+                {
+                    WriteLine("HES DEAD");
+                }
+                
             }
             Units enemy = eArmy[target];
 
@@ -184,8 +200,6 @@ namespace Netfram_Peli
                 }
             }
             //Enemy Unit Died
-            if (enemy.Hp <= 0)
-                eArmy.RemoveAt(target);
 
             //Going to enemy attack
             EnemyAttack();
@@ -229,9 +243,6 @@ namespace Netfram_Peli
                 Console.ReadLine();
                 Console.Clear();
             }
-            //Player unit died
-            if (pArmy[eTarget].Hp <= 0)
-                pArmy.RemoveAt(eTarget);
         }
         #endregion
         //Checking if player units are ready
