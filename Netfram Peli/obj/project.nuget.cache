@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "eB+lZStFpSbsVpSfae8lzDc67BW0caTI2Jo6Gj+NbzBUgKU9/VCusmDnRheW07dpzkA9O4B4dpYL7NgSeOxtHg==",
+  "dgSpecHash": "Qrsi+xqs7jN0LRl25K7DmuRmu/5FjfgDBgbwYB/KDsVIXPogso5SSgC2vzSpdv4wdJtU6IpSKKF3AZiXxkaY5g==",
   "success": true,
   "projectFilePath": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\s2000950\\.nuget\\packages\\microsoft.toolkit.highperformance\\7.1.2\\microsoft.toolkit.highperformance.7.1.2.nupkg.sha512",
+    "C:\\Users\\s2000950\\.nuget\\packages\\raylib-cslo\\4.2.0.3\\raylib-cslo.4.2.0.3.nupkg.sha512"
+  ],
   "logs": []
 }
