@@ -33,12 +33,13 @@ namespace Netfram_Peli
             eArmy.Add(new Units("Bjarke Broadside", 100, 70));
         }
         #endregion
-        // Player Fighting
+        // Asking player for attacker and target and then let the player fight
         #region
         public static void PlayerFighting()
         {
             int attacker = -1;
 
+            //Stuff for undo under here
             TurnState State = new TurnState();
             for (int i = 0; i < pArmy.Count(); i++)
             {
@@ -52,31 +53,29 @@ namespace Netfram_Peli
 
             while (undotest == true)
             {
-                WriteLine("You want to undo? Press Z if not press TAB.");
+                WriteLine("\nYou want to undo? Press Z if not press TAB.");
                 ConsoleKeyInfo undoing = Console.ReadKey();
                 switch (undoing.Key)
                 {
                     case ConsoleKey.Z:
                         if (previousTurns.Count > 0) 
                         { 
-                        Undo();
+                            Undo();
                         }
                         else
                         {
-                            WriteLine("Nothing to undo.");
+                            WriteLine("\nNothing to undo.");
                             undotest = false;
                         }
                         break;
                     case ConsoleKey.Tab:
-                        WriteLine("Continuing the game.");
+                        WriteLine("\nContinuing the game.");
                         undotest = false;
                         break;
                     default:
-                        WriteLine("Not a valid input.");
-                        undotest = false;
+                        WriteLine("\nNot a valid input.");
                         break;
                 }
-
             }
 
             //Asking for the attacker
@@ -100,7 +99,7 @@ namespace Netfram_Peli
                         break;
                     default:
                         attacker = -1;
-                        WriteLine("\nNot valid input.\n");
+                        WriteLine("\nNot a valid input.");
                         continue;
                 }
                 if (pArmy[attacker].Power == 1)
@@ -114,9 +113,10 @@ namespace Netfram_Peli
                 if (pArmy[attacker].Hp <= 0)
                 {
                     attacker = -1;
-                    WriteLine("HES DEAD!");
+                    WriteLine("THE UNIT IS DEAD!");
                 }
             }
+
             int target = -1;
 
             //Asking for the target
@@ -140,12 +140,12 @@ namespace Netfram_Peli
                         break;
                     default:
                         target = -1;
-                        WriteLine("\nNot valid input.");
+                        WriteLine("\nNot a valid input.");
                         continue;
                 }
                 if (eArmy[target].Hp <= 0)
                 {
-                    WriteLine("HES DEAD");
+                    WriteLine("THE UNIT IS DEAD");
                 }
                 
             }
@@ -199,12 +199,13 @@ namespace Netfram_Peli
                     break;
                 }
             }
-            //Enemy Unit Died
 
             //Going to enemy attack
             EnemyAttack();
 
+            //Setting undo test to true after fighting
             undotest = true;
+
             //Then going to check if player units are ready
             AreUnitsReady();
 
@@ -223,7 +224,7 @@ namespace Netfram_Peli
             Units enemysTarget = pArmy[eTarget];
             Units enemyAttacker = eArmy[eAttacker];
 
-
+            //Printing the attack
             if (eArmy.Any() && enemysTarget.Hp > 0)
             {
                 WriteLine("\nEnemy Attacks\n");
@@ -361,7 +362,11 @@ namespace Netfram_Peli
         }
         public static void Undo()
         {
-            WriteLine("Lets undo this round dmg");
+            //Telling what happens after undoing
+            Console.Clear();
+            WriteLine("\nUnits after undoing\n", ConsoleColor.White);
+
+            //Doing the undo itself
             if (previousTurns.Count > 0)
             {
                 int lastIndex = previousTurns.Count - 1;
@@ -375,6 +380,15 @@ namespace Netfram_Peli
                 for (int i = 0; i < eArmy.Count(); i++)
                 {
                     eArmy[i].Hp = last.enemyHPs[i];
+                }
+
+                //Printing armies after undoing
+                pArmy.ForEach(pUnit => WriteLine(pUnit.Name + " (" + pUnit.Hp + "/" + pUnit.MaxHP + ")", ConsoleColor.DarkYellow));
+                int y = 3;
+                foreach (var eUnit in eArmy)
+                {
+                    WriteAt(eUnit.Name + " (" + eUnit.Hp + "/" + eUnit.MaxHP + ")\n", 22, y, ConsoleColor.DarkMagenta);
+                    y++;
                 }
 
                 previousTurns.RemoveAt(lastIndex);

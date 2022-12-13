@@ -41,8 +41,8 @@ namespace Netfram_Peli
                 //Draw some texts here
                 Raylib.DrawText("VIKING FIGHT!", 12, 12, 20, Raylib.WHITE);
                 Raylib.DrawText("\nWelcome to the game:", 12, 20, 20, Raylib.WHITE);
-                Raylib.DrawText("\nPress esc to close this window:", 12, 60, 20, Raylib.WHITE);
-                Raylib.DrawText("\nAnd start the fight:", 12, 100, 20, Raylib.WHITE);
+                Raylib.DrawText("\nPress esc to close this window", 12, 60, 20, Raylib.WHITE);
+                Raylib.DrawText("\nand start the fight:", 12, 100, 20, Raylib.WHITE);
 
                 //Drawing current fps
                 Raylib.DrawText("FPS: " + Raylib.GetFPS(), 600, 12, 20, Raylib.WHITE);
@@ -65,10 +65,10 @@ namespace Netfram_Peli
             //Calling Init from Battle.cs
             Battle.Init();
 
-            // Introducing player to the game
+            //Introducing player to the game
             Battle.WriteLine("VIKING FIGHT!");
             Battle.WriteLine("\nWelcome to the game:");
-            Battle.WriteLine("\n\n\nPress enter to continue:");
+            Battle.WriteLine("\nPress enter to continue:");
             Console.ReadLine();
             Console.Clear();
 
