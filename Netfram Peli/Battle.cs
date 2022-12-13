@@ -58,8 +58,8 @@ namespace Netfram_Peli
                 switch (undoing.Key)
                 {
                     case ConsoleKey.Z:
-                        if (previousTurns.Count > 0) 
-                        { 
+                        if (previousTurns.Count > 0)
+                        {
                             Undo();
                         }
                         else
@@ -77,7 +77,7 @@ namespace Netfram_Peli
                         break;
                 }
             }
-
+            
             //Asking for the attacker
             while (attacker < 0)
             {
@@ -102,18 +102,19 @@ namespace Netfram_Peli
                         WriteLine("\nNot a valid input.");
                         continue;
                 }
-                if (pArmy[attacker].Power == 1)
-                {
-                    pArmy[attacker].Power--;
-                }
-                else if (pArmy[attacker].Power == 0)
-                {
-                    WriteLine("NOT READY TO USE");
-                }
                 if (pArmy[attacker].Hp <= 0)
                 {
                     attacker = -1;
                     WriteLine("THE UNIT IS DEAD!");
+                }
+                else if (pArmy[attacker].Power == 0)
+                {
+                    attacker = -1;
+                    WriteLine("NOT READY TO USE");
+                }
+                else if (pArmy[attacker].Power == 1)
+                {
+                    pArmy[attacker].Power--;
                 }
             }
 
@@ -145,9 +146,10 @@ namespace Netfram_Peli
                 }
                 if (eArmy[target].Hp <= 0)
                 {
+                    target = -1;
                     WriteLine("THE UNIT IS DEAD");
                 }
-                
+
             }
             Units enemy = eArmy[target];
 
@@ -198,6 +200,7 @@ namespace Netfram_Peli
 
                     break;
                 }
+                else break;
             }
 
             //Going to enemy attack
@@ -205,12 +208,16 @@ namespace Netfram_Peli
 
             //Setting undo test to true after fighting
             undotest = true;
-
+            
             //Then going to check if player units are ready
             AreUnitsReady();
 
-            //After that checking if game is still on
-            GameStillOn();
+            if (GameStillOn() == false)
+            {
+                WhatTeamWon();
+            }
+            else
+                PlayerFighting();
         }
         #endregion
         //Enemy Fighting
@@ -254,17 +261,16 @@ namespace Netfram_Peli
 
             for (int i = 0; i < pArmy.Count(); i++)
             {
+                if (pArmy[i].Hp <= 0)
+                {
+                    continue;
+                }
                 if (pArmy[i].Power > 0)
                 {
                     unitsReady++;
                 }
             }
-
-            if (unitsReady == 1)
-            {
-                GameStillOn();
-            }
-            else if (unitsReady == 0)
+            if (unitsReady == 0)
             {
                 for (int i = 0; i < pArmy.Count(); i++)
                 {
@@ -273,33 +279,42 @@ namespace Netfram_Peli
             }
         }
         #endregion
-        //Check if lists still have units
+        //Check if units are alive
         #region
-        static void GameStillOn()
+        public static bool GameStillOn()
         {
-            while (true)
+            bool eAlive = AnyoneAlive(eArmy);
+            bool pAlive = AnyoneAlive(pArmy);
+
+            if (eAlive && pAlive == true)
             {
-                if (pArmy.Count() > 0 && eArmy.Count() > 0)
-                {
-                    PlayerFighting();
-                }
-                else if (pArmy.Count() == 0 || eArmy.Count() == 0)
-                {
-                    break;
-                }
+                return true;
             }
+            else return false;
         }
         //Telling which team won the game
         public static void WhatTeamWon()
         {
-            if (pArmy.Count() > eArmy.Count())
+            if (AnyoneAlive(pArmy))
             {
                 WriteLine("Congrats you destroyed all enemies and you WIN the game.");
             }
-            else if (eArmy.Count() > pArmy.Count())
+            else if (AnyoneAlive(eArmy))
             {
                 WriteLine("Enemy destroyed your vikings and WINS the game. Better luck next time!");
             }
+        }
+
+        private static bool AnyoneAlive(List<Units> army)
+        {
+            foreach (Units Unit in army)
+            {
+                if (Unit.Hp > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         #endregion
         //COLLORS
