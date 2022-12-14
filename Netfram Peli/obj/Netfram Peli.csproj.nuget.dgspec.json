@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj": {}
+    "C:\\Users\\s2000950\\Desktop\\NetframPeliprojekti\\Netfram Peli\\Netfram Peli.csproj": {}
   },
   "projects": {
-    "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj": {
+    "C:\\Users\\s2000950\\Desktop\\NetframPeliprojekti\\Netfram Peli\\Netfram Peli.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj",
+        "projectUniqueName": "C:\\Users\\s2000950\\Desktop\\NetframPeliprojekti\\Netfram Peli\\Netfram Peli.csproj",
         "projectName": "Netfram Peli",
-        "projectPath": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\Netfram Peli.csproj",
+        "projectPath": "C:\\Users\\s2000950\\Desktop\\NetframPeliprojekti\\Netfram Peli\\Netfram Peli.csproj",
         "packagesPath": "C:\\Users\\s2000950\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\obj\\",
+        "outputPath": "C:\\Users\\s2000950\\Desktop\\NetframPeliprojekti\\Netfram Peli\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

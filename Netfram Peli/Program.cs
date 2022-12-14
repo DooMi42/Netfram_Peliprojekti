@@ -26,7 +26,7 @@ namespace Netfram_Peli
 
             Raylib.ClearBackground(Raylib.DARKGRAY);
             //Loading the background image what we want to draw 
-            Raylib_CsLo.Image background = Raylib.LoadImage("C:\\Users\\s2000950\\Desktop\\NetframPelipropjekti\\Netfram Peli\\vikingfight.png");
+            Raylib_CsLo.Image background = Raylib.LoadImage("C:\\Users\\s2000950\\Desktop\\NetframPeliprojekti\\Netfram Peli\\vikingfight.png");
             //Setting it to be a texture
             Texture2D texture = Raylib.LoadTextureFromImage(background);
 
